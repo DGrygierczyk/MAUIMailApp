@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using MailApp.Services;
+using MailApp.ViewModel;
+using Microsoft.Extensions.Logging;
 
 namespace MailApp;
 
@@ -18,7 +20,11 @@ public static class MauiProgram
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
+		builder.Services.AddSingleton<EmailService>();
 
+		builder.Services.AddSingleton<MainPageViewModel>();
+		
+		builder.Services.AddSingleton<MainPage>();
 		return builder.Build();
 	}
 }
