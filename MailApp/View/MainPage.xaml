@@ -22,18 +22,24 @@
             <Button
                 Text="Click me"
                 Command="{Binding LoginUserCommand}"
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding LoginUserCommand}" />
+                </Frame.GestureRecognizers>
                 HorizontalOptions="Center" />
-
-            <!--  <Entry Placeholder="login" /> -->
-            <!--     <Entry Placeholder="password" /> -->
-            <!--     <Button -->
-            <!--         x:Name="OptionBtn" -->
-            <!--         Text="Show options" -->
-            <!--         Clicked="OptionBtn_Clicked"/> -->
-            <!-- -->
-
-            <!-- <EntryCell  Label="login" Placeholder="enter login" /> -->
-            <!--<EntryCell Label="password" Placeholder="enter password" />-->
+            
+            <Label Text="login" />
+            <Entry 
+                Placeholder="enter login" 
+                Text="{Binding Username, Mode=TwoWay}" />
+            
+            <Label Text="password"/>
+            <Entry 
+                Placeholder="enter password" 
+                Text="{Binding Password, Mode=TwoWay}" />
+            <!-- <EntryCell  -->
+            <!--     Label="password"  -->
+            <!--     Placeholder="enter password"  -->
+            <!--     Text="{Binding Password, Mode=TwoWay}" /> -->
         </VerticalStackLayout>
     </ScrollView>
 

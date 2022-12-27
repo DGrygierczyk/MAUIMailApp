@@ -7,6 +7,7 @@ namespace MailApp.ViewModel;
 public partial class MainPageViewModel : BaseViewModel
 {
    private EmailService emailService;
+   
    public MainPageViewModel(EmailService emailService)
    {
       this.emailService = emailService;
@@ -15,10 +16,19 @@ public partial class MainPageViewModel : BaseViewModel
    [RelayCommand]
    async Task LoginUserAsync()
    {
+      var RequiredOauth =  emailService.IsOauthSupported(Username);
       try
       {
-         var result = await emailService.VerifyCredentialsAsync("damiangrygierczyktest@gmail.com", "damiangrygierczyktest123");
-         Debug.WriteLine(result);
+         if (RequiredOauth)
+         {
+            // await emailService.VerifyOAuthCredentialsAsync(Username, Password);
+            Debug.WriteLine("OAuth is supported");
+         }
+         else
+         {
+            await emailService.VerifyCredentialsAsync(Username, Password);
+            await Shell.Current.GoToAsync($"{nameof(MailboxPage)}");
+         }
       }
       catch (Exception e)
       {
@@ -26,24 +36,4 @@ public partial class MainPageViewModel : BaseViewModel
          throw;
       }
    }
-   // private async void Login()
-   // {
-   //    if (string.IsNullOrEmpty(Username) || string.IsNullOrEmpty(Password))
-   //    {
-   //       // Display an error message
-   //       return;
-   //    }
-   //
-   //    var emailService = new EmailService();
-   //    bool isValid = await emailService.VerifyCredentialsAsync(Username, Password);
-   //
-   //    if (isValid)
-   //    {
-   //       // Navigate to the main application window
-   //    }
-   //    else
-   //    {
-   //       // Display an error message
-   //    }
-   // }
 }
