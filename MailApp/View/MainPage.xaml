@@ -22,9 +22,6 @@
             <Button
                 Text="Click me"
                 Command="{Binding LoginUserCommand}"
-                <Frame.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding LoginUserCommand}" />
-                </Frame.GestureRecognizers>
                 HorizontalOptions="Center" />
             
             <Label Text="login" />

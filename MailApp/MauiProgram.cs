@@ -1,4 +1,5 @@
 ﻿using MailApp.Services;
+using MailApp.View;
 using MailApp.ViewModel;
 using Microsoft.Extensions.Logging;
 
@@ -23,8 +24,11 @@ public static class MauiProgram
 		builder.Services.AddSingleton<EmailService>();
 
 		builder.Services.AddSingleton<MainPageViewModel>();
+		builder.Services.AddSingleton<MailboxPageViewModel>();
 		
 		builder.Services.AddSingleton<MainPage>();
+		builder.Services.AddSingleton<MailboxPage>();
+		
 		return builder.Build();
 	}
 }
