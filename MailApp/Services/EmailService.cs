@@ -104,4 +104,17 @@ public class EmailService
             return emailEnvelopes;
         }
     }
+    
+    public async Task<MimeKit.MimeMessage> FetchEmailAsync(string username, string password, int id)
+    {
+        using (var client = new ImapClient())
+        {
+            await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
+            await client.AuthenticateAsync(username, password);
+            var inbox = client.Inbox;
+            await inbox.OpenAsync(FolderAccess.ReadOnly);
+            var message = await inbox.GetMessageAsync(id);
+            return message;
+        }
+    }
 }

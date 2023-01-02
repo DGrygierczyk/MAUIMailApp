@@ -16,9 +16,9 @@
             <Color x:Key="LightBackground">#FAF9F8</Color>
             <Color x:Key="DarkBackground">Black</Color>
 
-            <Style ApplyToDerivedTypes="True" TargetType="Page">
-                <Setter Property="BackgroundColor" Value="{StaticResource LightBackground}" />
-            </Style>
+            <!-- <Style ApplyToDerivedTypes="True" TargetType="Page"> -->
+            <!--     <Setter Property="BackgroundColor" Value="{StaticResource LightBackground}" /> -->
+            <!-- </Style> -->
 
 			<Style ApplyToDerivedTypes="True" TargetType="NavigationPage">
 				<Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}" />

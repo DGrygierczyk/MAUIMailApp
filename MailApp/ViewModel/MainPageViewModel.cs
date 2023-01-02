@@ -14,7 +14,7 @@ public partial class MainPageViewModel : BaseViewModel
         this.emailService = emailService;
     }
 
-    [RelayCommand]
+    [ICommand]
     async Task LoginUserAsync()
     {
     //TODO: DO WYWALENIA

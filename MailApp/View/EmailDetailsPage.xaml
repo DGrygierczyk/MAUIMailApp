@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MailApp.View.EmailDetailsPage"
+             xmlns:viewmodel="clr-namespace:MailApp.ViewModel"
+             x:DataType="viewmodel:EmailDetailsPageViewModel">
+    <Grid ColumnDefinitions="*,*"
+          RowDefinitions="*, Auto">
+        <WebView Grid.RowSpan="2" Grid.ColumnSpan="2">
+                                <WebView.Source>
+                        <HtmlWebViewSource Html="{Binding EmailDetails.Body.HtmlBody}" />
+                    </WebView.Source>
+                </WebView>
+                </Grid>
+</ContentPage>

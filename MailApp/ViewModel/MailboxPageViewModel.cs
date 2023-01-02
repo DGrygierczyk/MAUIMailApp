@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MailApp.Model;
 using MailApp.Services;
+using MailApp.View;
 using MailKit;
 
 namespace MailApp.ViewModel;
@@ -34,13 +35,25 @@ public partial class MailboxPageViewModel : BaseViewModel
         this.emailService = emailService;
     }
 
-    [RelayCommand]
+    [ICommand]
    public async Task FetchEmailsAsync()
     {
+        EmailEnvelopes.Clear();
         var envelopes = await emailService.FetchAllEmailSummariesAsync(username, password);
         foreach (var envelope in envelopes)
         {
             EmailEnvelopes.Add(envelope);
         }
     }
+   
+   [ICommand]
+   public async Task GoToEmailAsync(EmailEnvelope envelope)
+   {
+       var fetchedEmail= await emailService.FetchEmailAsync(username, password, envelope.Id);
+       var emailDetails = new EmailBody { Body = fetchedEmail }; 
+       await Shell.Current.GoToAsync($"{nameof(EmailDetailsPage)}",true, new Dictionary<string, object>
+       {
+           {"EmailDetails", emailDetails}
+       });
+   }
 }

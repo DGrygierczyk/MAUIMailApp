@@ -25,9 +25,11 @@ public static class MauiProgram
 
 		builder.Services.AddSingleton<MainPageViewModel>();
 		builder.Services.AddSingleton<MailboxPageViewModel>();
+		builder.Services.AddTransient<EmailDetailsPageViewModel>();
 		
 		builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddSingleton<MailboxPage>();
+		builder.Services.AddTransient<EmailDetailsPage>();
 		
 		return builder.Build();
 	}
