@@ -9,9 +9,20 @@
     <Grid
         ColumnDefinitions="*,*"
         ColumnSpacing="5"
-        RowDefinitions="*,Auto"
+        RowDefinitions="Auto,*,Auto"
         RowSpacing="0">
+        <Entry 
+            Grid.Row="0"
+            Grid.Column="0"
+            Placeholder="search messages" 
+            Text="{Binding SearchEmailQuery, Mode=TwoWay}" />
+            <Button
+                Grid.Row="0"
+                Grid.Column="1"
+                Text="Search"
+                Command="{Binding SearchEmailsCommand}" />
         <CollectionView
+            Grid.Row="1"
             Grid.ColumnSpan="2"
             ItemsSource="{Binding EmailEnvelopes}"
             SelectionMode="None">
@@ -24,17 +35,20 @@
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=GoToEmailCommand}"
                                     CommandParameter="{Binding .}" />
                             </Frame.GestureRecognizers>
-                            <Grid Padding="0" ColumnDefinitions="125,*">
+                            <Grid Padding="0" ColumnDefinitions="125,*,20">
                                 <!-- <Image Aspect="AspectFill" Source="{Binding Image}" -->
                                 <!--        WidthRequest="125" -->
                                 <!--        HeightRequest="125" /> -->
                                 <VerticalStackLayout
                                     VerticalOptions="Center"
                                     Grid.Column="1"
-                                    Padding="10">
-                                    <Label Style="{StaticResource LargeLabel}" Text="{Binding From}" />
+                                    Padding="5">
+                                    <Label Style="{StaticResource MediumLabel}" Text="{Binding From}" />
                                     <Label Style="{StaticResource MediumLabel}" Text="{Binding Subject}" />
                                 </VerticalStackLayout>
+                                <Button Grid.Column="3"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=DeleteEmailCommand}"
+                                        CommandParameter="{Binding .}"/>
                             </Grid>
                         </Frame>
                     </Grid>

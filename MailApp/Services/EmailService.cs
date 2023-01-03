@@ -94,7 +94,7 @@ public class EmailService
                 var single_email =  new EmailEnvelope()
                 {
                     Subject = message.NormalizedSubject,
-                    From = message.Envelope.From.ToString(),
+                    From =   message.Envelope.From.First().Name,
                     Date = message.Date.DateTime,
                     IsRead = message.Flags.Value.HasFlag(MessageFlags.Seen),
                     Id = message.Index
@@ -117,4 +117,57 @@ public class EmailService
             return message;
         }
     }
+
+    public async Task<List<EmailEnvelope>> SearchEmailsAsync(string username, string password, string searchQuery)
+    {
+        var emailEnvelopes = new List<EmailEnvelope>();
+
+        using (var client = new ImapClient())
+        {
+            await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
+            await client.AuthenticateAsync(username, password);
+            var inbox = client.Inbox;
+            await inbox.OpenAsync(FolderAccess.ReadOnly);
+            // SearchQuery searchQuery = SearchQuery.SubjectContains(searchEmailQuery);
+
+            var uidsSubjects = await inbox.SearchAsync(SearchQuery.SubjectContains(searchQuery));
+            var uidsFrom = await inbox.SearchAsync(SearchQuery.FromContains(searchQuery));
+            var uidsTo = await inbox.SearchAsync(SearchQuery.ToContains(searchQuery));
+            var uidsBody = await inbox.SearchAsync(SearchQuery.BodyContains(searchQuery));
+            var uids = uidsSubjects.Concat(uidsFrom).Concat(uidsTo).Concat(uidsBody).Distinct().ToList();
+            var messages = await inbox.FetchAsync(uids, MessageSummaryItems.Full | MessageSummaryItems.UniqueId);
+
+            foreach (var message in messages)
+            {
+                var singleEmail = new EmailEnvelope
+                {
+                    Subject = message.NormalizedSubject,
+                    From = message.Envelope.From.First().Name,
+                    Date = message.Date.DateTime,
+                    IsRead = message.Flags.Value.HasFlag(MessageFlags.Seen),
+                    Id = message.Index
+                };
+                emailEnvelopes.Add(singleEmail);
+            }
+
+            await client.DisconnectAsync(true);
+            return emailEnvelopes;
+        }
+    }
+
+    public async Task<bool> DeleteEmailAsync(string username, string password, int id)
+    {
+        using (var client = new ImapClient())
+        {
+            await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
+            await client.AuthenticateAsync(username, password);
+            var inbox = client.Inbox;
+            await inbox.OpenAsync(FolderAccess.ReadWrite);
+            await inbox.AddFlagsAsync(id, MessageFlags.Deleted, true);
+            await inbox.ExpungeAsync();
+            await client.DisconnectAsync(true);
+            return true;
+        }
+    }
+
 }
