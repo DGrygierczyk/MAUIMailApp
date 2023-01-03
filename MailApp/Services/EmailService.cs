@@ -78,6 +78,22 @@ public class EmailService
     //         return messages;
     //     }
     // }
+    
+    //fetch folders
+    public async Task<IList<IMailFolder>> GetFoldersAsync(string username, string password)
+    {
+        using (var client = new ImapClient())
+        {
+            await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
+            await client.AuthenticateAsync(username, password);
+            var inbox = client.Inbox;
+            await inbox.OpenAsync(FolderAccess.ReadOnly);
+            var folders = client.GetFolders(client.PersonalNamespaces[0]);
+            await client.DisconnectAsync(true);
+            return folders;
+        }
+    }
+    
     public async Task<List<EmailEnvelope>> FetchAllEmailSummariesAsync(string username, string password)
     {
         List<EmailEnvelope> emailEnvelopes = new();

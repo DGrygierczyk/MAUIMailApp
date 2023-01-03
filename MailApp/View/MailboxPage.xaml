@@ -39,6 +39,13 @@
                                 <!-- <Image Aspect="AspectFill" Source="{Binding Image}" -->
                                 <!--        WidthRequest="125" -->
                                 <!--        HeightRequest="125" /> -->
+                                <BoxView 
+                                    Color="Blue"
+                                    IsVisible="{Binding IsRead}"
+                                    HeightRequest="10"
+                                    WidthRequest="10"
+                                    VerticalOptions="Start"
+                                    HorizontalOptions="End" />
                                 <VerticalStackLayout
                                     VerticalOptions="Center"
                                     Grid.Column="1"

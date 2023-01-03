@@ -18,7 +18,9 @@ public partial class MailboxPageViewModel : BaseViewModel
     private string password;
 
     public ObservableCollection<EmailEnvelope> EmailEnvelopes { get; } = new();
-
+    
+    [ObservableProperty]  
+    IList<IMailFolder> emailFolders;
     public string Username
     {
         get => username;
@@ -49,6 +51,7 @@ public partial class MailboxPageViewModel : BaseViewModel
         {
             EmailEnvelopes.Insert(0, envelope);
         }
+        EmailFolders = await emailService.GetFoldersAsync(username, password);
     }
 
     [ICommand]
@@ -60,6 +63,12 @@ public partial class MailboxPageViewModel : BaseViewModel
         {
             { "EmailDetails", emailDetails }
         });
+    }
+    
+    [ICommand]
+    public async Task CreateEmailAsync()
+    {
+        await Shell.Current.GoToAsync($"{nameof(CreateEmailPage)}", true);
     }
     
     [ICommand]
