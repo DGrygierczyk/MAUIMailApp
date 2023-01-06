@@ -7,6 +7,7 @@ using MailApp.Services;
 using MailApp.View;
 using MailKit;
 using MailKit.Search;
+using MimeKit;
 
 namespace MailApp.ViewModel;
 
@@ -57,8 +58,21 @@ public partial class MailboxPageViewModel : BaseViewModel
     [ICommand]
     public async Task GoToEmailAsync(EmailEnvelope envelope)
     {
+        List<MimeEntity> attachments = new();
         var fetchedEmail = await emailService.FetchEmailAsync(username, password, envelope.Id);
-        var emailDetails = new EmailBody { Body = fetchedEmail };
+
+        foreach (var attachment in fetchedEmail.Attachments)
+        {
+            // attachments.Add(attachment.ContentDisposition?.FileName);
+            attachments.Add(attachment);
+        }
+        
+        var emailDetails = new EmailBody
+        {
+            Body = fetchedEmail,
+            Attachments = attachments
+        };
+        
         await Shell.Current.GoToAsync($"{nameof(EmailDetailsPage)}", true, new Dictionary<string, object>
         {
             { "EmailDetails", emailDetails }
@@ -68,7 +82,7 @@ public partial class MailboxPageViewModel : BaseViewModel
     [ICommand]
     public async Task CreateEmailAsync()
     {
-        await Shell.Current.GoToAsync($"{nameof(CreateEmailPage)}", true);
+        await Shell.Current.GoToAsync($"{nameof(CreateEmailPage)}?username={Username}&password={Password}", true);
     }
     
     [ICommand]

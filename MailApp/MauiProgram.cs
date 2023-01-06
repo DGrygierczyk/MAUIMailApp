@@ -22,14 +22,17 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 		builder.Services.AddSingleton<EmailService>();
+		builder.Services.AddSingleton<CreateEmailService>();
 
 		builder.Services.AddSingleton<MainPageViewModel>();
 		builder.Services.AddSingleton<MailboxPageViewModel>();
 		builder.Services.AddTransient<EmailDetailsPageViewModel>();
+		builder.Services.AddTransient<CreateEmailPageViewModel>();
 		
 		builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddSingleton<MailboxPage>();
 		builder.Services.AddTransient<EmailDetailsPage>();
+		builder.Services.AddTransient<CreateEmailPage>();
 		
 		return builder.Build();
 	}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MailApp.View.CreateEmailPage"
+             xmlns:viewmodel="clr-namespace:MailApp.ViewModel"
+             x:DataType="viewmodel:CreateEmailPageViewModel">
+    <ContentPage.Content>
+        <StackLayout>
+            <Entry Placeholder="To" Text="{Binding To, Mode=TwoWay}" />
+            <Entry Placeholder="Subject" Text="{Binding Subject, Mode=TwoWay}" />
+            <Editor Placeholder="Message" Text="{Binding Body, Mode=TwoWay}" />
+            <ListView ItemsSource="{Binding Attachments}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding ContentDisposition.FileName}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Command="{Binding AddAttachmentsCommand}" />
+            <Button Text="Send" Command="{Binding SendEmailCommand}" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
