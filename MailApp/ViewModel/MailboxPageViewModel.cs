@@ -72,7 +72,6 @@ public partial class MailboxPageViewModel : BaseViewModel
 
         foreach (var attachment in fetchedEmail.Attachments)
         {
-            // attachments.Add(attachment.ContentDisposition?.FileName);
             attachments.Add(attachment);
         }
 

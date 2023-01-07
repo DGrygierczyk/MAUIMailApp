@@ -44,42 +44,9 @@ public class EmailService
     public bool IsOauthSupported(string email)
     {
         string emailProvider = email.Split('@')[1];
-
-        //
-        // Dictionary<string, bool> EmailProviders = new Dictionary<string, bool>();
-        // var json = File.ReadAllText("appsettings.json");
-        // var data = JsonConvert.DeserializeObject<Dictionary<string, bool>>(json);
-        //
-        // foreach (var item in data)
-        // {
-        //     EmailProviders[item.Key] = item.Value;
-        // }
-        //
-        // if (EmailProviders.ContainsKey(emailProvider) && EmailProviders[emailProvider])
-        // {
-        //     return true;
-        // }
-
         return false;
     }
     
-    // public async Task<IList<IMessageSummary>> GetEmailsAsync(string username, string password)
-    // {
-    //     using (var client = new ImapClient())
-    //     {
-    //         await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
-    //         await client.AuthenticateAsync(username, password);
-    //         var inbox = client.Inbox;
-    //         await inbox.OpenAsync(FolderAccess.ReadOnly);
-    //         var query = SearchQuery.All;
-    //         var uids = await inbox.SearchAsync(query); 
-    //         var messages = await inbox.FetchAsync(uids, MessageSummaryItems.Full | MessageSummaryItems.UniqueId);
-    //         await client.DisconnectAsync(true);
-    //         return messages;
-    //     }
-    // }
-    
-    //fetch folders
     public async Task<IList<IMailFolder>> GetFoldersAsync(string username, string password)
     {
         using (var client = new ImapClient())
@@ -128,8 +95,10 @@ public class EmailService
             await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
             await client.AuthenticateAsync(username, password);
             var inbox = client.Inbox;
-            await inbox.OpenAsync(FolderAccess.ReadOnly);
+            await inbox.OpenAsync(FolderAccess.ReadWrite);
             var message = await inbox.GetMessageAsync(id);
+            await inbox.AddFlagsAsync(id, MessageFlags.Seen, true);
+            await client.DisconnectAsync(true);
             return message;
         }
     }
