@@ -38,6 +38,11 @@ public class EmailService
         {
             return false;
         }
+        catch (System.ArgumentNullException)
+        {
+            await Shell.Current.DisplayAlert("Error", "Incorrect credentials", "OK");
+            return false;
+        }
     }
 
 
