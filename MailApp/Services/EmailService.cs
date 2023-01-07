@@ -27,7 +27,7 @@ public class EmailService
         }
         catch (AuthenticationException ex)
         {
-            await Shell.Current.DisplayAlert("Błąd", "Niepoprawne dane logowania", "OK");
+            await Shell.Current.DisplayAlert("Error", "Incorrect credentials", "OK");
             return false;
         }
         catch (ImapCommandException)

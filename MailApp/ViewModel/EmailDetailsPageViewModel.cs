@@ -49,13 +49,7 @@ public partial class EmailDetailsPageViewModel : BaseViewModel
     [ICommand]
     public async Task SaveFileAsync(string filename)
     {
-        
-        
-        
-        // var attachment = EmailDetails.Attachments.FirstOrDefault(a => a.ContentDisposition.FileName == filename);
-        // if (attachment != null)
-        // {
-            var path = FileSystem.Current.AppDataDirectory;
+        var path = FileSystem.Current.AppDataDirectory;
             var fullPath = Path.Combine(path, filename);
             var fileStream = File.Create(fullPath);
 
@@ -69,12 +63,5 @@ public partial class EmailDetailsPageViewModel : BaseViewModel
             }
 
             await fileStream.DisposeAsync();
-            
-
-            // using (fileStream)
-            // {
-            // await attachment.ContentObject.DecodeToAsync(fileStream);
-            // }
-            // }
     }
 }

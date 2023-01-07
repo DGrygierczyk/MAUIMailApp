@@ -13,7 +13,6 @@ public class CreateEmailService
         message.From.Add(new MailboxAddress(username, username));
         message.To.Add(new MailboxAddress(to, to));
         message.Subject = subject;
-        // message.Body = new TextPart("plain") { Text = body };
         var multipart = new Multipart("mixed");
         multipart.Add(new TextPart("plain") { Text = body });
         if (attachments != null)

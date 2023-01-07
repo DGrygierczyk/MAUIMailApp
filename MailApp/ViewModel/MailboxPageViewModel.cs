@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MailApp.Model;
 using MailApp.Services;
+using MailApp.Services.Interfaces;
 using MailApp.View;
 using MailKit;
 using MailKit.Search;
@@ -11,37 +12,24 @@ using MimeKit;
 
 namespace MailApp.ViewModel;
 
-[QueryProperty(nameof(Username), "username")]
-[QueryProperty(nameof(Password), "password")]
 public partial class MailboxPageViewModel : BaseViewModel
 {
-    private string username;
-    private string password;
-
+    // [ObservableProperty] string username;
+    // [ObservableProperty] string password;
     public ObservableCollection<EmailEnvelope> EmailEnvelopes { get; } = new();
 
     [ObservableProperty] IList<IMailFolder> emailFolders;
-
-    public string Username
-    {
-        get => username;
-        set => SetProperty(ref username, value);
-    }
-
-    public string Password
-    {
-        get => password;
-        set => SetProperty(ref password, value);
-    }
-
     [ObservableProperty] string searchEmailQuery;
     [ObservableProperty] ObservableCollection<string> name = new();
 
     private EmailService emailService;
+    private readonly ICredentialService _credentialService;
 
-    public MailboxPageViewModel(EmailService emailService)
+    public MailboxPageViewModel(EmailService emailService, ICredentialService credentialService)
     {
+        _credentialService = credentialService;
         this.emailService = emailService;
+        (Username, Password) = _credentialService.GetCredentials();
     }
 
     [ICommand]
@@ -49,7 +37,7 @@ public partial class MailboxPageViewModel : BaseViewModel
     {
         EmailEnvelopes.Clear();
 
-        var envelopes = await emailService.FetchAllEmailSummariesAsync(username, password, selectedFolder);
+        var envelopes = await emailService.FetchAllEmailSummariesAsync(Username, Password, selectedFolder);
 
         foreach (var envelope in envelopes)
         {
@@ -57,7 +45,7 @@ public partial class MailboxPageViewModel : BaseViewModel
         }
         
         Name.Clear();
-        var folders = await emailService.GetFoldersAsync(username, password);
+        var folders = await emailService.GetFoldersAsync(Username, Password);
         foreach (var folder in folders)
         {
             Name.Add(folder.Name);
@@ -68,7 +56,7 @@ public partial class MailboxPageViewModel : BaseViewModel
     public async Task GoToEmailAsync(EmailEnvelope envelope)
     {
         List<MimeEntity> attachments = new();
-        var fetchedEmail = await emailService.FetchEmailAsync(username, password, envelope.Id);
+        var fetchedEmail = await emailService.FetchEmailAsync(Username, Password, envelope.Id);
 
         foreach (var attachment in fetchedEmail.Attachments)
         {
@@ -90,7 +78,7 @@ public partial class MailboxPageViewModel : BaseViewModel
     [ICommand]
     public async Task CreateEmailAsync()
     {
-        await Shell.Current.GoToAsync($"{nameof(CreateEmailPage)}?username={Username}&password={Password}", true);
+        await Shell.Current.GoToAsync(nameof(CreateEmailPage), true);
     }
 
     [ICommand]
@@ -103,7 +91,7 @@ public partial class MailboxPageViewModel : BaseViewModel
             return;
         }
 
-        var envelopes = await emailService.SearchEmailsAsync(username, password, searchEmailQuery);
+        var envelopes = await emailService.SearchEmailsAsync(Username, Password, searchEmailQuery);
         foreach (var envelope in envelopes)
         {
             EmailEnvelopes.Insert(0, envelope);
@@ -117,7 +105,7 @@ public partial class MailboxPageViewModel : BaseViewModel
             "Are you sure you want to delete this email?", "Yes", "No");
         if (result)
         {
-            await emailService.DeleteEmailAsync(username, password, envelope.Id);
+            await emailService.DeleteEmailAsync(Username, Password, envelope.Id);
             EmailEnvelopes.Remove(envelope);
         }
     }
