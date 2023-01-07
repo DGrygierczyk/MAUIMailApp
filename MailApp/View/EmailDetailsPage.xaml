@@ -5,15 +5,14 @@
              x:Class="MailApp.View.EmailDetailsPage"
              xmlns:viewmodel="clr-namespace:MailApp.ViewModel"
              x:DataType="viewmodel:EmailDetailsPageViewModel">
-
-
+    
     <Grid ColumnDefinitions="*,*"
           RowDefinitions="*, Auto, *">
         <WebView Grid.RowSpan="2" Grid.ColumnSpan="2">
-                                <WebView.Source>
-                        <HtmlWebViewSource Html="{Binding EmailDetails.Body.HtmlBody}" />
-                    </WebView.Source>
-                </WebView>
+            <WebView.Source>
+                <HtmlWebViewSource Html="{Binding EmailDetails.Body.HtmlBody}" />
+            </WebView.Source>
+        </WebView>
         <CollectionView
             Grid.Row="2"
             ItemsSource="{Binding AttachmentNames}"
@@ -23,19 +22,17 @@
                     <Frame HeightRequest="100">
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EmailDetailsPageViewModel}}, Path=SaveFileCommand}" 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EmailDetailsPageViewModel}}, Path=SaveFileCommand}"
                                 CommandParameter="{Binding .}" />
                         </Frame.GestureRecognizers>
                         <Grid>
-                        <VerticalStackLayout>
-                            <Label Text="{Binding .}" />
-                        </VerticalStackLayout>
+                            <VerticalStackLayout>
+                                <Label Text="{Binding .}" />
+                            </VerticalStackLayout>
                         </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-            
         </CollectionView>
-        
-            </Grid>
+    </Grid>
 </ContentPage>

@@ -104,7 +104,7 @@ public class EmailService
             await client.AuthenticateAsync(username, password);
             var inbox = await client.GetFolderAsync(folder);
             await inbox.OpenAsync(FolderAccess.ReadOnly);
-            var messages = await inbox.FetchAsync(0, -1, MessageSummaryItems.Full);
+            var messages = await inbox.FetchAsync(0, -1, MessageSummaryItems.Fast | MessageSummaryItems.Envelope);
             foreach (var message in messages)
             {
                 var single_email =  new EmailEnvelope()
@@ -112,7 +112,7 @@ public class EmailService
                     Subject = message.NormalizedSubject,
                     From =   message.Envelope.From.First().Name,
                     Date = message.Date.DateTime,
-                    IsRead = message.Flags.Value.HasFlag(MessageFlags.Seen),
+                    IsNotRead = !(message.Flags.Value.HasFlag(MessageFlags.Seen)),
                     Id = message.Index
                 };
                 emailEnvelopes.Add(single_email);
@@ -151,7 +151,7 @@ public class EmailService
             var uidsTo = await inbox.SearchAsync(SearchQuery.ToContains(searchQuery));
             var uidsBody = await inbox.SearchAsync(SearchQuery.BodyContains(searchQuery));
             var uids = uidsSubjects.Concat(uidsFrom).Concat(uidsTo).Concat(uidsBody).Distinct().ToList();
-            var messages = await inbox.FetchAsync(uids, MessageSummaryItems.Full | MessageSummaryItems.UniqueId);
+            var messages = await inbox.FetchAsync(uids, MessageSummaryItems.Fast | MessageSummaryItems.Envelope| MessageSummaryItems.UniqueId);
 
             foreach (var message in messages)
             {
@@ -160,7 +160,7 @@ public class EmailService
                     Subject = message.NormalizedSubject,
                     From = message.Envelope.From.First().Name,
                     Date = message.Date.DateTime,
-                    IsRead = message.Flags.Value.HasFlag(MessageFlags.Seen),
+                    IsNotRead = !(message.Flags.Value.HasFlag(MessageFlags.Seen)),
                     Id = message.Index
                 };
                 emailEnvelopes.Add(singleEmail);
