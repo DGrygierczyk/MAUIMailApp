@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -6,71 +6,97 @@
              xmlns:model="clr-namespace:MailApp.Model"
              x:DataType="viewmodel:MailboxPageViewModel"
              x:Class="MailApp.View.MailboxPage">
-    <Grid
-        ColumnDefinitions="*,*"
-        ColumnSpacing="5"
-        RowDefinitions="Auto,*,Auto"
-        RowSpacing="0">
-        <Entry 
-            Grid.Row="0"
-            Grid.Column="0"
-            Placeholder="search messages" 
-            Text="{Binding SearchEmailQuery, Mode=TwoWay}" />
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Button" Clicked="MenuItem_OnClicked" />
+    </ContentPage.ToolbarItems>
+    
+    <Grid x:Name="MainGrid" ColumnDefinitions="*,Auto">
+       
+
+        <Grid
+            x:Name="MainContentGrid"
+            ColumnDefinitions="*,*"
+            ColumnSpacing="5"
+            RowDefinitions="Auto,*,Auto"
+            RowSpacing="0">
+            <Entry
+                Grid.Row="0"
+                Grid.Column="0"
+                Placeholder="search messages"
+                Text="{Binding SearchEmailQuery, Mode=TwoWay}" />
             <Button
                 Grid.Row="0"
                 Grid.Column="1"
                 Text="Search"
                 Command="{Binding SearchEmailsCommand}" />
-        <CollectionView
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            ItemsSource="{Binding EmailEnvelopes}"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:EmailEnvelope">
-                    <Grid Padding="10">
-                        <Frame HeightRequest="125" Style="{StaticResource CardView}">
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=GoToEmailCommand}"
-                                    CommandParameter="{Binding .}" />
-                            </Frame.GestureRecognizers>
-                            <Grid Padding="0" ColumnDefinitions="125,*,20">
-                                <!-- <Image Aspect="AspectFill" Source="{Binding Image}" -->
-                                <!--        WidthRequest="125" -->
-                                <!--        HeightRequest="125" /> -->
-                                <BoxView 
-                                    Color="Blue"
-                                    IsVisible="{Binding IsRead}"
-                                    HeightRequest="10"
-                                    WidthRequest="10"
-                                    VerticalOptions="Start"
-                                    HorizontalOptions="End" />
-                                <VerticalStackLayout
-                                    VerticalOptions="Center"
-                                    Grid.Column="1"
-                                    Padding="5">
-                                    <Label Style="{StaticResource MediumLabel}" Text="{Binding From}" />
-                                    <Label Style="{StaticResource MediumLabel}" Text="{Binding Subject}" />
-                                </VerticalStackLayout>
-                                <Button Grid.Column="3"
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=DeleteEmailCommand}"
+            <CollectionView
+                Grid.Row="1"
+                Grid.ColumnSpan="2"
+                ItemsSource="{Binding EmailEnvelopes}"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:EmailEnvelope">
+                        <Grid Padding="10">
+                            <Frame HeightRequest="125" Style="{StaticResource CardView}">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=GoToEmailCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <Grid Padding="0" ColumnDefinitions="125,*,20">
+                                    <!-- <Image Aspect="AspectFill" Source="{Binding Image}" -->
+                                    <!--        WidthRequest="125" -->
+                                    <!--        HeightRequest="125" /> -->
+                                    <BoxView
+                                        Color="Blue"
+                                        IsVisible="{Binding IsRead}"
+                                        HeightRequest="10"
+                                        WidthRequest="10"
+                                        VerticalOptions="Start"
+                                        HorizontalOptions="End" />
+                                    <VerticalStackLayout
+                                        VerticalOptions="Center"
+                                        Grid.Column="1"
+                                        Padding="5">
+                                        <Label Style="{StaticResource MediumLabel}" Text="{Binding From}" />
+                                        <Label Style="{StaticResource MediumLabel}" Text="{Binding Subject}" />
+                                    </VerticalStackLayout>
+                                    <Button Grid.Column="3"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=DeleteEmailCommand}"
+                                            CommandParameter="{Binding .}" />
+                                </Grid>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <!-- <ActivityIndicator IsVisible="{Binding IsBusy}" -->
+            <!--                    IsRunning="{Binding IsBusy}" -->
+            <!--                    HorizontalOptions="Fill" -->
+            <!--                    VerticalOptions="Center" -->
+            <!--                    Color="{StaticResource Primary}" -->
+            <!--                    Grid.RowSpan="2" -->
+            <!--                    Grid.ColumnSpan="2" /> -->
+            <Button
+                Grid.Row="2"
+                Command="{Binding CreateEmailCommand}" />
+        </Grid>
+        
+
+                    <CollectionView IsVisible="false" x:Name="MenuGrid" ItemsSource="{Binding Name}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <!-- <Frame> -->
+                                <!--     <Frame.GestureRecognizers> -->
+                                <!--         <TapGestureRecognizer Tapped="MenuItem_OnClicked"/> -->
+                                <!--     </Frame.GestureRecognizers> -->
+                                <!-- </Frame> -->
+                                <Button Text="{Binding .}" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=FetchEmailsCommand}"
                                         CommandParameter="{Binding .}"/>
-                            </Grid>
-                        </Frame>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-        <!-- <ActivityIndicator IsVisible="{Binding IsBusy}" -->
-        <!--                    IsRunning="{Binding IsBusy}" -->
-        <!--                    HorizontalOptions="Fill" -->
-        <!--                    VerticalOptions="Center" -->
-        <!--                    Color="{StaticResource Primary}" -->
-        <!--                    Grid.RowSpan="2" -->
-        <!--                    Grid.ColumnSpan="2" /> -->
-        <Button
-            Grid.Row="2"
-            Command="{Binding CreateEmailCommand}"/>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        </CollectionView>
+
     </Grid>
 </ContentPage>

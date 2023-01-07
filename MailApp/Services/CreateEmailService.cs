@@ -1,3 +1,5 @@
+using MailKit;
+using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
 using MimeKit;
 
@@ -27,6 +29,16 @@ public class CreateEmailService
             await client.ConnectAsync("smtp.wp.pl", 465, true);
             await client.AuthenticateAsync(username, password);
             await client.SendAsync(message);
+            await client.DisconnectAsync(true);
+        }
+        //add emial to send folder
+        using (var client = new ImapClient())
+        {
+            await client.ConnectAsync("imap.wp.pl", 993, true);
+            await client.AuthenticateAsync(username, password);
+            var inbox = await client.GetFolderAsync("Sent");
+            await inbox.OpenAsync(FolderAccess.ReadWrite);
+            await inbox.AppendAsync(message);
             await client.DisconnectAsync(true);
         }
     }

@@ -6,6 +6,7 @@
              xmlns:viewmodel="clr-namespace:MailApp.ViewModel"
              x:DataType="viewmodel:EmailDetailsPageViewModel">
 
+
     <Grid ColumnDefinitions="*,*"
           RowDefinitions="*, Auto, *">
         <WebView Grid.RowSpan="2" Grid.ColumnSpan="2">
@@ -13,11 +14,6 @@
                         <HtmlWebViewSource Html="{Binding EmailDetails.Body.HtmlBody}" />
                     </WebView.Source>
                 </WebView>
-        <!-- <ListView  -->
-        <!--     Grid.Row="2" -->
-        <!--     ItemsSource="{Binding AttachmentNames}" -->
-        <!--     ItemTapped="{Binding SaveFileCommand}" -->
-        <!-- /> -->
         <CollectionView
             Grid.Row="2"
             ItemsSource="{Binding AttachmentNames}"

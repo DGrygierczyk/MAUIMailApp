@@ -15,5 +15,19 @@ public partial class MailboxPage : ContentPage
         base.OnAppearing();
         await ((MailboxPageViewModel)BindingContext).FetchEmailsAsync();
     }
-
+   async void MenuItem_OnClicked(object sender, EventArgs e)
+    {
+        if (MenuGrid.IsVisible)
+        {
+            await MenuGrid.FadeTo(0);
+            MenuGrid.IsVisible = false;
+            MainContentGrid.IsVisible = true;
+        }
+        else
+        {
+            MainContentGrid.IsVisible = false;
+            MenuGrid.IsVisible = true;
+            await MenuGrid.FadeTo(1,400,Easing.SinIn);
+        }
+    }
 }

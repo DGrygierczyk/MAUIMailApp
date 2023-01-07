@@ -94,7 +94,7 @@ public class EmailService
         }
     }
     
-    public async Task<List<EmailEnvelope>> FetchAllEmailSummariesAsync(string username, string password)
+    public async Task<List<EmailEnvelope>> FetchAllEmailSummariesAsync(string username, string password, string folder)
     {
         List<EmailEnvelope> emailEnvelopes = new();
         
@@ -102,7 +102,7 @@ public class EmailService
         {
             await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect); 
             await client.AuthenticateAsync(username, password);
-            var inbox = client.Inbox;
+            var inbox = await client.GetFolderAsync(folder);
             await inbox.OpenAsync(FolderAccess.ReadOnly);
             var messages = await inbox.FetchAsync(0, -1, MessageSummaryItems.Full);
             foreach (var message in messages)

@@ -19,9 +19,9 @@ public partial class MailboxPageViewModel : BaseViewModel
     private string password;
 
     public ObservableCollection<EmailEnvelope> EmailEnvelopes { get; } = new();
-    
-    [ObservableProperty]  
-    IList<IMailFolder> emailFolders;
+
+    [ObservableProperty] IList<IMailFolder> emailFolders;
+
     public string Username
     {
         get => username;
@@ -34,7 +34,8 @@ public partial class MailboxPageViewModel : BaseViewModel
         set => SetProperty(ref password, value);
     }
 
-    [ObservableProperty] string searchEmailQuery;    
+    [ObservableProperty] string searchEmailQuery;
+    [ObservableProperty] ObservableCollection<string> name = new();
 
     private EmailService emailService;
 
@@ -44,15 +45,23 @@ public partial class MailboxPageViewModel : BaseViewModel
     }
 
     [ICommand]
-    public async Task FetchEmailsAsync()
+    public async Task FetchEmailsAsync(string selectedFolder = "Inbox")
     {
         EmailEnvelopes.Clear();
-        var envelopes = await emailService.FetchAllEmailSummariesAsync(username, password);
+
+        var envelopes = await emailService.FetchAllEmailSummariesAsync(username, password, selectedFolder);
+
         foreach (var envelope in envelopes)
         {
             EmailEnvelopes.Insert(0, envelope);
         }
-        EmailFolders = await emailService.GetFoldersAsync(username, password);
+        
+        Name.Clear();
+        var folders = await emailService.GetFoldersAsync(username, password);
+        foreach (var folder in folders)
+        {
+            Name.Add(folder.Name);
+        } 
     }
 
     [ICommand]
@@ -66,25 +75,25 @@ public partial class MailboxPageViewModel : BaseViewModel
             // attachments.Add(attachment.ContentDisposition?.FileName);
             attachments.Add(attachment);
         }
-        
+
         var emailDetails = new EmailBody
         {
             Body = fetchedEmail,
             Attachments = attachments
         };
-        
+
         await Shell.Current.GoToAsync($"{nameof(EmailDetailsPage)}", true, new Dictionary<string, object>
         {
             { "EmailDetails", emailDetails }
         });
     }
-    
+
     [ICommand]
     public async Task CreateEmailAsync()
     {
         await Shell.Current.GoToAsync($"{nameof(CreateEmailPage)}?username={Username}&password={Password}", true);
     }
-    
+
     [ICommand]
     public async Task SearchEmailsAsync()
     {
@@ -94,18 +103,19 @@ public partial class MailboxPageViewModel : BaseViewModel
             await FetchEmailsAsync();
             return;
         }
-        // SearchQuery searchQuery = SearchQuery.SubjectContains(searchEmailQuery);
+
         var envelopes = await emailService.SearchEmailsAsync(username, password, searchEmailQuery);
         foreach (var envelope in envelopes)
         {
             EmailEnvelopes.Insert(0, envelope);
         }
     }
-    
+
     [ICommand]
     public async Task DeleteEmailAsync(EmailEnvelope envelope)
     {
-        var result = await Application.Current.MainPage.DisplayAlert("Confirm", "Are you sure you want to delete this email?", "Yes", "No");
+        var result = await Application.Current.MainPage.DisplayAlert("Confirm",
+            "Are you sure you want to delete this email?", "Yes", "No");
         if (result)
         {
             await emailService.DeleteEmailAsync(username, password, envelope.Id);
