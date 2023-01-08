@@ -30,52 +30,52 @@
                 Text="Search"
                 Command="{Binding SearchEmailsCommand}" />
             <CollectionView
-                    Grid.Row="1"
-                    Grid.ColumnSpan="3"
-                    x:Name="EmailsView"
-                    ItemsSource="{Binding EmailEnvelopes}"
-                    SelectionMode="None">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="model:EmailEnvelope">
-                            <Grid Padding="10">
-                                <Frame HeightRequest="90" Style="{StaticResource CardView}" BackgroundColor="#1C1C1E">
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=GoToEmailCommand}"
+                Grid.Row="1"
+                Grid.ColumnSpan="3"
+                x:Name="EmailsView"
+                ItemsSource="{Binding EmailEnvelopes}"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:EmailEnvelope">
+                        <Grid Padding="10">
+                            <Frame HeightRequest="90" Style="{StaticResource CardView}" BackgroundColor="#1C1C1E">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=GoToEmailCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <Grid Padding="0" ColumnDefinitions="20,*,20" RowDefinitions="20,*">
+                                    <BoxView
+                                        Color="Blue"
+                                        IsVisible="{Binding IsNotRead}"
+                                        HeightRequest="10"
+                                        WidthRequest="10"
+                                        VerticalOptions="Start"
+                                        HorizontalOptions="End"
+                                        Grid.Column="0"
+                                        Grid.Row="0" />
+                                    <Label Style="{StaticResource SmallLabel}" Text="{Binding Date}" Grid.Row="0"
+                                           Grid.Column="1" HorizontalTextAlignment="End" />
+                                    <VerticalStackLayout
+                                        VerticalOptions="Center"
+                                        Grid.Column="1"
+                                        Padding="20">
+                                        <Label Style="{StaticResource MediumLabel}" Text="{Binding From}" />
+                                        <Label MaxLines="2" Style="{StaticResource MediumLabel}"
+                                               Text="{Binding Subject}" />
+                                    </VerticalStackLayout>
+                                    <Button Grid.Column="2"
+                                            Text="Xxxx"
+                                            TextColor="White"
+                                            BackgroundColor="Red"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=DeleteEmailCommand}"
                                             CommandParameter="{Binding .}" />
-                                    </Frame.GestureRecognizers>
-                                    <Grid Padding="0" ColumnDefinitions="20,*,20" RowDefinitions="20,*">
-                                        <BoxView
-                                            Color="Blue"
-                                            IsVisible="{Binding IsNotRead}"
-                                            HeightRequest="10"
-                                            WidthRequest="10"
-                                            VerticalOptions="Start"
-                                            HorizontalOptions="End"
-                                            Grid.Column="0"
-                                            Grid.Row="0" />
-                                        <Label Style="{StaticResource SmallLabel}" Text="{Binding Date}" Grid.Row="0"
-                                               Grid.Column="1" HorizontalTextAlignment="End" />
-                                        <VerticalStackLayout
-                                            VerticalOptions="Center"
-                                            Grid.Column="1"
-                                            Padding="20">
-                                            <Label Style="{StaticResource MediumLabel}" Text="{Binding From}" />
-                                            <Label MaxLines="2" Style="{StaticResource MediumLabel}"
-                                                   Text="{Binding Subject}" />
-                                        </VerticalStackLayout>
-                                        <Button Grid.Column="2"
-                                                Text="Xxxx"
-                                                TextColor="White"
-                                                BackgroundColor="Red"
-                                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=DeleteEmailCommand}"
-                                                CommandParameter="{Binding .}" />
-                                    </Grid>
-                                </Frame>
-                            </Grid>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                                </Grid>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
             <Button
                 Grid.Row="2"
                 Grid.ColumnSpan="3"

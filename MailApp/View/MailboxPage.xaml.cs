@@ -14,10 +14,11 @@ public partial class MailboxPage : ContentPage
     {
         base.OnAppearing();
         await ((MailboxPageViewModel)BindingContext).FetchEmailsAsync();
-        CollectionView myCollectionView = EmailsView;
+        var myCollectionView = EmailsView;
         myCollectionView.ScrollTo(0);
     }
-   async void MenuItem_OnClicked(object sender, EventArgs e)
+
+    private async void MenuItem_OnClicked(object sender, EventArgs e)
     {
         if (MenuGrid.IsVisible)
         {
@@ -29,7 +30,7 @@ public partial class MailboxPage : ContentPage
         {
             MainContentGrid.IsVisible = false;
             MenuGrid.IsVisible = true;
-            await MenuGrid.FadeTo(1,400,Easing.SinIn);
+            await MenuGrid.FadeTo(1, 400, Easing.SinIn);
         }
     }
 }

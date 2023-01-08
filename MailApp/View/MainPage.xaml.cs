@@ -1,27 +1,25 @@
-﻿using MailApp.Services;
-using MailApp.ViewModel;
+﻿using MailApp.ViewModel;
 
 namespace MailApp;
 
 public partial class MainPage : ContentPage
 {
-	public MainPage(MainPageViewModel viewModel)
-	{
-		InitializeComponent();
-		BindingContext = viewModel;
-		 // viewModel.ClearCredentialsAsync();
-	}
-	
-	protected override async void OnAppearing()
-	{
-		base.OnAppearing(); 
-		await ((MainPageViewModel)BindingContext).ClearCredentialsAsync();
-	}
+    public MainPage(MainPageViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = viewModel;
+    }
 
-	private void OnShowAdditionalFieldsSwitchToggled(object sender, ToggledEventArgs e)
-	{
-		additionalFieldsContainer.IsVisible = showAdditionalFieldsSwitch.IsToggled;	
-	}
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await ((MainPageViewModel)BindingContext).ClearCredentialsAsync();
+    }
+
+    private void OnShowAdditionalFieldsSwitchToggled(object sender, ToggledEventArgs e)
+    {
+        additionalFieldsContainer.IsVisible = showAdditionalFieldsSwitch.IsToggled;
+    }
 }
 
 

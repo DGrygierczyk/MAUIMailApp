@@ -6,9 +6,9 @@
              xmlns:viewmodel="clr-namespace:MailApp.ViewModel"
              x:DataType="viewmodel:EmailDetailsPageViewModel">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Reply"  Command="{Binding ReplayCommand}" CommandParameter="{Binding EmailDetails}"/>
+        <ToolbarItem Text="Reply" Command="{Binding ReplayCommand}" CommandParameter="{Binding EmailDetails}" />
     </ContentPage.ToolbarItems>
-    
+
     <Grid RowDefinitions="auto, auto, *">
         <Label Grid.Row="0" Padding="0,10,0,0">
             <Label.FormattedText>
@@ -16,7 +16,7 @@
                     <Span Text="From: " FontAttributes="Bold" />
                     <Span Text="{Binding EmailDetails.Body.From}" />
                 </FormattedString>
-                </Label.FormattedText>
+            </Label.FormattedText>
         </Label>
         <Label Grid.Row="1" Padding="0,10,0,0">
             <Label.FormattedText>
@@ -26,35 +26,35 @@
                 </FormattedString>
             </Label.FormattedText>
         </Label>
-        
+
         <Grid Grid.Row="2" ColumnDefinitions="*,*"
               RowDefinitions="*, Auto, *"
               Padding="5,20,5,20">
-        <WebView x:Name="webView" Grid.RowSpan="2" Grid.ColumnSpan="2"  BackgroundColor="Black" >
-            <WebView.Source>
-                <HtmlWebViewSource Html="{Binding EmailDetails.HtmlBody}" />
-            </WebView.Source>
-        </WebView>
-            
-        <CollectionView
-            Grid.Row="2" Grid.ColumnSpan="2"
-            ItemsSource="{Binding AttachmentNames}"
-            SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Frame HeightRequest="40" Padding="20,5,20,5"  BorderColor="#DDDDDD">
-                        <Frame.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EmailDetailsPageViewModel}}, Path=SaveFileCommand}"
-                                CommandParameter="{Binding .}" />
-                        </Frame.GestureRecognizers>
+            <WebView x:Name="webView" Grid.RowSpan="2" Grid.ColumnSpan="2" BackgroundColor="Black">
+                <WebView.Source>
+                    <HtmlWebViewSource Html="{Binding EmailDetails.HtmlBody}" />
+                </WebView.Source>
+            </WebView>
+
+            <CollectionView
+                Grid.Row="2" Grid.ColumnSpan="2"
+                ItemsSource="{Binding AttachmentNames}"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame HeightRequest="40" Padding="20,5,20,5" BorderColor="#DDDDDD">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EmailDetailsPageViewModel}}, Path=SaveFileCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Frame.GestureRecognizers>
                             <VerticalStackLayout>
                                 <Label Padding="2,5,2,5" Text="{Binding .}" MaxLines="1" />
                             </VerticalStackLayout>
-                    </Frame>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
     </Grid>
 </ContentPage>
