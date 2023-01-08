@@ -13,14 +13,14 @@ using MailKit.Security;
 
 public class EmailService
 {
-    public async Task<bool> VerifyCredentialsAsync(string username, string password, string imapServer, int imapPort)
+    public async Task<bool> VerifyCredentialsAsync(ServerCredentials credentials)
     {
         try
         {
             using (var client = new ImapClient())
             {
-                await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect);
-                await client.AuthenticateAsync(username, password);
+                await client.ConnectAsync(credentials.ImapServer, credentials.ImapPort, SecureSocketOptions.SslOnConnect);
+                await client.AuthenticateAsync(credentials.Username, credentials.Password);
                 client.Disconnect(true);
                 return true;
             }
@@ -45,19 +45,14 @@ public class EmailService
         }
     }
 
-
-    public bool IsOauthSupported(string email)
-    {
-        string emailProvider = email.Split('@')[1];
-        return false;
-    }
     
-    public async Task<IList<IMailFolder>> GetFoldersAsync(string username, string password, string imapServer, int imapPort)
+    
+    public async Task<IList<IMailFolder>> GetFoldersAsync(ServerCredentials credentials)
     {
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect);
-            await client.AuthenticateAsync(username, password);
+            await client.ConnectAsync(credentials.ImapServer, credentials.ImapPort, SecureSocketOptions.SslOnConnect);
+            await client.AuthenticateAsync(credentials.Username, credentials.Password);
             var inbox = client.Inbox;
             await inbox.OpenAsync(FolderAccess.ReadOnly);
             var folders = client.GetFolders(client.PersonalNamespaces[0]);
@@ -66,14 +61,14 @@ public class EmailService
         }
     }
     
-    public async Task<List<EmailEnvelope>> FetchAllEmailSummariesAsync(string username, string password, string folder, string imapServer, int imapPort)
+    public async Task<List<EmailEnvelope>> FetchAllEmailSummariesAsync(ServerCredentials credentials, string folder)
     {
         List<EmailEnvelope> emailEnvelopes = new();
         
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect); 
-            await client.AuthenticateAsync(username, password);
+            await client.ConnectAsync(credentials.ImapServer, credentials.ImapPort, SecureSocketOptions.SslOnConnect); 
+            await client.AuthenticateAsync(credentials.Username, credentials.Password);
             var inbox = await client.GetFolderAsync(folder);
             await inbox.OpenAsync(FolderAccess.ReadOnly);
             var messages = await inbox.FetchAsync(0, -1, MessageSummaryItems.Fast | MessageSummaryItems.Envelope);
@@ -93,12 +88,12 @@ public class EmailService
         }
     }
     
-    public async Task<MimeKit.MimeMessage> FetchEmailAsync(string username, string password, int id, string imapServer, int imapPort)
+    public async Task<MimeKit.MimeMessage> FetchEmailAsync(ServerCredentials credentials, int id)
     {
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect);
-            await client.AuthenticateAsync(username, password);
+            await client.ConnectAsync(credentials.ImapServer, credentials.ImapPort, SecureSocketOptions.SslOnConnect);
+            await client.AuthenticateAsync(credentials.Username, credentials.Password);
             var inbox = client.Inbox;
             await inbox.OpenAsync(FolderAccess.ReadWrite);
             var message = await inbox.GetMessageAsync(id);
@@ -108,14 +103,14 @@ public class EmailService
         }
     }
 
-    public async Task<List<EmailEnvelope>> SearchEmailsAsync(string username, string password, string searchQuery, string imapServer, int imapPort)
+    public async Task<List<EmailEnvelope>> SearchEmailsAsync(ServerCredentials credentials, string searchQuery)
     {
         var emailEnvelopes = new List<EmailEnvelope>();
 
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect);
-            await client.AuthenticateAsync(username, password);
+            await client.ConnectAsync(credentials.ImapServer, credentials.ImapPort, SecureSocketOptions.SslOnConnect);
+            await client.AuthenticateAsync(credentials.Username, credentials.Password);
             var inbox = client.Inbox;
             await inbox.OpenAsync(FolderAccess.ReadOnly);
             // SearchQuery searchQuery = SearchQuery.SubjectContains(searchEmailQuery);
@@ -145,12 +140,12 @@ public class EmailService
         }
     }
 
-    public async Task<bool> DeleteEmailAsync(string username, string password, int id, string imapServer, int imapPort)
+    public async Task<bool> DeleteEmailAsync(ServerCredentials credentials, int id)
     {
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect);
-            await client.AuthenticateAsync(username, password);
+            await client.ConnectAsync(credentials.ImapServer, credentials.ImapPort, SecureSocketOptions.SslOnConnect);
+            await client.AuthenticateAsync(credentials.Username, credentials.Password);
             var inbox = client.Inbox;
             await inbox.OpenAsync(FolderAccess.ReadWrite);
             await inbox.AddFlagsAsync(id, MessageFlags.Deleted, true);

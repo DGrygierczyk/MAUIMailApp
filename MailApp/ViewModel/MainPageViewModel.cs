@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
+using MailApp.Model;
 using MailApp.Services;
 using MailApp.Services.Interfaces;
 using MailApp.View;
@@ -15,9 +16,7 @@ public partial class MainPageViewModel : BaseViewModel
     {
         this.emailService = emailService;
         _credentialService = credentialService;
-        _credentialService.SetCredentials(
-            string.Empty, string.Empty, string.Empty,
-            0, string.Empty, 0);
+        _credentialService.SetCredentials(new ServerCredentials());
     }
 
     [ICommand]
@@ -30,9 +29,10 @@ public partial class MainPageViewModel : BaseViewModel
         SmtpPort = 465;
         ImapServer = "imap.wp.pl";
         ImapPort = 993;
-        _credentialService.SetCredentials(Username, Password, SmtpServer, SmtpPort, ImapServer, ImapPort);
+        ServerCredentials credentials = new ServerCredentials(Username, Password, ImapServer, ImapPort, SmtpServer, SmtpPort);
+        _credentialService.SetCredentials(credentials);
 
-        var veryfied = await emailService.VerifyCredentialsAsync(Username, Password, ImapServer, ImapPort);
+        var veryfied = await emailService.VerifyCredentialsAsync(credentials);
         if (veryfied)
         {
             await Shell.Current.GoToAsync(nameof(MailboxPage));
@@ -43,6 +43,6 @@ public partial class MainPageViewModel : BaseViewModel
 
     public async Task ClearCredentialsAsync()
     {
-        _credentialService.SetCredentials("", "", "", 0, "", 0);
+        _credentialService.SetCredentials(new ServerCredentials());
     }
 }

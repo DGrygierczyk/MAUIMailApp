@@ -1,3 +1,4 @@
+using MailApp.Model;
 using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
@@ -7,10 +8,10 @@ namespace MailApp.Services;
 
 public class CreateEmailService
 {
-    public async Task SendEmailAsync(string to, string subject, string body, string username, string password, List<MimeEntity> attachments, string imapServer, int imapPort, string smtpServer, int smtpPort)
+    public async Task SendEmailAsync(string to, string subject, string body, List<MimeEntity> attachments, ServerCredentials credentials)
     {
         var message = new MimeMessage();
-        message.From.Add(new MailboxAddress(username, username));
+        message.From.Add(new MailboxAddress(credentials.Username, credentials.Username));
         message.To.Add(new MailboxAddress(to, to));
         message.Subject = subject;
         var multipart = new Multipart("mixed");
@@ -25,16 +26,16 @@ public class CreateEmailService
         message.Body = multipart;
         using (var client = new SmtpClient())
         {
-            await client.ConnectAsync(smtpServer,smtpPort, true);
-            await client.AuthenticateAsync(username, password);
+            await client.ConnectAsync(credentials.SmtpServer, credentials.SmtpPort, true);
+            await client.AuthenticateAsync(credentials.Username, credentials.Password);
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
         }
         //add emial to send folder
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync(imapServer,imapPort, true);
-            await client.AuthenticateAsync(username, password);
+            await client.ConnectAsync(credentials.ImapServer, credentials.ImapPort, true);
+            await client.AuthenticateAsync(credentials.Username, credentials.Password);
             var inbox = await client.GetFolderAsync("Sent");
             await inbox.OpenAsync(FolderAccess.ReadWrite);
             await inbox.AppendAsync(message);

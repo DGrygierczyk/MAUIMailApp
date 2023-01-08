@@ -29,15 +29,14 @@ public partial class MailboxPageViewModel : BaseViewModel
     {
         _credentialService = credentialService;
         this.emailService = emailService;
-        (Username, Password, ImapServer, ImapPort, ImapServer, ImapPort) = _credentialService.GetCredentials();
     }
 
     [ICommand]
     public async Task FetchEmailsAsync(string selectedFolder = "Inbox")
     {
         EmailEnvelopes.Clear();
-
-        var envelopes = await emailService.FetchAllEmailSummariesAsync(Username, Password, selectedFolder, ImapServer, ImapPort);
+        var credentials = _credentialService.GetCredentials();
+        var envelopes = await emailService.FetchAllEmailSummariesAsync(credentials, selectedFolder);
 
         foreach (var envelope in envelopes)
         {
@@ -45,7 +44,7 @@ public partial class MailboxPageViewModel : BaseViewModel
         }
         
         Name.Clear();
-        var folders = await emailService.GetFoldersAsync(Username, Password, ImapServer, ImapPort);
+        var folders = await emailService.GetFoldersAsync(credentials);
         foreach (var folder in folders)
         {
             Name.Add(folder.Name);
@@ -55,8 +54,9 @@ public partial class MailboxPageViewModel : BaseViewModel
     [ICommand]
     public async Task GoToEmailAsync(EmailEnvelope envelope)
     {
+        var credentials = _credentialService.GetCredentials();
         List<MimeEntity> attachments = new();
-        var fetchedEmail = await emailService.FetchEmailAsync(Username, Password, envelope.Id, ImapServer, ImapPort);
+        var fetchedEmail = await emailService.FetchEmailAsync(credentials, envelope.Id);
 
         foreach (var attachment in fetchedEmail.Attachments)
         {
@@ -86,6 +86,7 @@ public partial class MailboxPageViewModel : BaseViewModel
     [ICommand]
     public async Task SearchEmailsAsync()
     {
+        var credentials = _credentialService.GetCredentials();
         EmailEnvelopes.Clear();
         if (string.IsNullOrEmpty(searchEmailQuery))
         {
@@ -93,7 +94,7 @@ public partial class MailboxPageViewModel : BaseViewModel
             return;
         }
 
-        var envelopes = await emailService.SearchEmailsAsync(Username, Password, searchEmailQuery, ImapServer, ImapPort);
+        var envelopes = await emailService.SearchEmailsAsync(credentials, searchEmailQuery);
         foreach (var envelope in envelopes)
         {
             EmailEnvelopes.Insert(0, envelope);
@@ -103,11 +104,12 @@ public partial class MailboxPageViewModel : BaseViewModel
     [ICommand]
     public async Task DeleteEmailAsync(EmailEnvelope envelope)
     {
+        var credentials = _credentialService.GetCredentials();
         var result = await Application.Current.MainPage.DisplayAlert("Confirm",
             "Are you sure you want to delete this email?", "Yes", "No");
         if (result)
         {
-            await emailService.DeleteEmailAsync(Username, Password, envelope.Id, ImapServer, ImapPort);
+            await emailService.DeleteEmailAsync(credentials, envelope.Id);
             EmailEnvelopes.Remove(envelope);
         }
     }
