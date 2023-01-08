@@ -17,6 +17,11 @@ public partial class MainPage : ContentPage
 		base.OnAppearing(); 
 		await ((MainPageViewModel)BindingContext).ClearCredentialsAsync();
 	}
+
+	private void OnShowAdditionalFieldsSwitchToggled(object sender, ToggledEventArgs e)
+	{
+		additionalFieldsContainer.IsVisible = showAdditionalFieldsSwitch.IsToggled;	
+	}
 }
 
 

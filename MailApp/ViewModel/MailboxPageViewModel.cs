@@ -29,7 +29,7 @@ public partial class MailboxPageViewModel : BaseViewModel
     {
         _credentialService = credentialService;
         this.emailService = emailService;
-        (Username, Password) = _credentialService.GetCredentials();
+        (Username, Password, ImapServer, ImapPort, ImapServer, ImapPort) = _credentialService.GetCredentials();
     }
 
     [ICommand]
@@ -37,7 +37,7 @@ public partial class MailboxPageViewModel : BaseViewModel
     {
         EmailEnvelopes.Clear();
 
-        var envelopes = await emailService.FetchAllEmailSummariesAsync(Username, Password, selectedFolder);
+        var envelopes = await emailService.FetchAllEmailSummariesAsync(Username, Password, selectedFolder, ImapServer, ImapPort);
 
         foreach (var envelope in envelopes)
         {
@@ -45,7 +45,7 @@ public partial class MailboxPageViewModel : BaseViewModel
         }
         
         Name.Clear();
-        var folders = await emailService.GetFoldersAsync(Username, Password);
+        var folders = await emailService.GetFoldersAsync(Username, Password, ImapServer, ImapPort);
         foreach (var folder in folders)
         {
             Name.Add(folder.Name);
@@ -56,17 +56,19 @@ public partial class MailboxPageViewModel : BaseViewModel
     public async Task GoToEmailAsync(EmailEnvelope envelope)
     {
         List<MimeEntity> attachments = new();
-        var fetchedEmail = await emailService.FetchEmailAsync(Username, Password, envelope.Id);
+        var fetchedEmail = await emailService.FetchEmailAsync(Username, Password, envelope.Id, ImapServer, ImapPort);
 
         foreach (var attachment in fetchedEmail.Attachments)
         {
             attachments.Add(attachment);
         }
-
         var emailDetails = new EmailBody
         {
             Body = fetchedEmail,
-            Attachments = attachments
+            Attachments = attachments,
+            HtmlBody = fetchedEmail.HtmlBody+
+            "<script>document.body.style.fontSize='3em'</script>" +
+            "<style>body{color: white; background-color: black;}</style>"
         };
 
         await Shell.Current.GoToAsync($"{nameof(EmailDetailsPage)}", true, new Dictionary<string, object>
@@ -91,7 +93,7 @@ public partial class MailboxPageViewModel : BaseViewModel
             return;
         }
 
-        var envelopes = await emailService.SearchEmailsAsync(Username, Password, searchEmailQuery);
+        var envelopes = await emailService.SearchEmailsAsync(Username, Password, searchEmailQuery, ImapServer, ImapPort);
         foreach (var envelope in envelopes)
         {
             EmailEnvelopes.Insert(0, envelope);
@@ -105,7 +107,7 @@ public partial class MailboxPageViewModel : BaseViewModel
             "Are you sure you want to delete this email?", "Yes", "No");
         if (result)
         {
-            await emailService.DeleteEmailAsync(Username, Password, envelope.Id);
+            await emailService.DeleteEmailAsync(Username, Password, envelope.Id, ImapServer, ImapPort);
             EmailEnvelopes.Remove(envelope);
         }
     }

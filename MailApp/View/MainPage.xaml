@@ -13,31 +13,49 @@
             VerticalOptions="Center">
 
             <Label
-                Text="Welcome to oooooooooo"
+                Text="Welcome to MailApp"
                 SemanticProperties.HeadingLevel="Level2"
                 SemanticProperties.Description="Welcome to MailApp"
                 FontSize="18"
                 HorizontalOptions="Center" />
 
-            <Button
-                Text="Click me"
-                Command="{Binding LoginUserCommand}"
-                HorizontalOptions="Center" />
-            
             <Label Text="login" />
             <Entry 
                 Placeholder="enter login" 
                 Text="{Binding Username, Mode=TwoWay}" />
-            
+
             <Label Text="password"/>
             <Entry 
                 Placeholder="enter password" 
-                Text="{Binding Password, Mode=TwoWay}" />
-            <!-- <EntryCell  -->
-            <!--     Label="password"  -->
-            <!--     Placeholder="enter password"  -->
-            <!--     Text="{Binding Password, Mode=TwoWay}" /> -->
+                Text="{Binding Password, Mode=TwoWay}" IsPassword="True"/>
+            <Button
+                Text="Login"
+                Command="{Binding LoginUserCommand}"
+                HorizontalOptions="Center" />
+            <Grid ColumnDefinitions="*,Auto">
+            <Switch Grid.Column="0"
+                x:Name="showAdditionalFieldsSwitch"
+                Toggled="OnShowAdditionalFieldsSwitchToggled" />
+            <Label Grid.Column="1" Text="Show additional configuration"/>
+            </Grid>
+            <StackLayout x:Name="additionalFieldsContainer" IsVisible="False">
+                <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,*">
+                    <Label Grid.Row="0" Grid.Column="0" Text="Enter IMAP address" />
+                    <Entry Grid.Row="1" Grid.Column="0" Placeholder="Enter IMAP address"
+                      Text="{Binding ImapServer, Mode=TwoWay}"/>
+                    <Label Grid.Row="0" Grid.Column="1" Text="Enter IMAP port" />
+                    <Entry Grid.Row="1" Grid.Column="1" Placeholder="Enter IMAP port"
+                           Text="{Binding ImapPort, Mode=TwoWay}"/>
+                    <Label Grid.Row="2" Grid.Column="0" Text="Enter SMTP address" />
+            <Entry Grid.Row="3" Grid.Column="0" Placeholder="Enter SMTP address"
+            Text="{Binding SmtpServer, Mode=TwoWay}"/>
+                    <Label Grid.Row="2" Grid.Column="1" Text="Enter SMTP port" />
+                    <Entry Grid.Row="3" Grid.Column="1" Placeholder="Enter SMTP port"
+                           Text="{Binding SmtpPort, Mode=TwoWay}"/>
+                </Grid>
+            </StackLayout>
         </VerticalStackLayout>
+        
     </ScrollView>
 
 </ContentPage>

@@ -13,13 +13,13 @@ using MailKit.Security;
 
 public class EmailService
 {
-    public async Task<bool> VerifyCredentialsAsync(string username, string password)
+    public async Task<bool> VerifyCredentialsAsync(string username, string password, string imapServer, int imapPort)
     {
         try
         {
             using (var client = new ImapClient())
             {
-                await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
+                await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect);
                 await client.AuthenticateAsync(username, password);
                 client.Disconnect(true);
                 return true;
@@ -52,11 +52,11 @@ public class EmailService
         return false;
     }
     
-    public async Task<IList<IMailFolder>> GetFoldersAsync(string username, string password)
+    public async Task<IList<IMailFolder>> GetFoldersAsync(string username, string password, string imapServer, int imapPort)
     {
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
+            await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect);
             await client.AuthenticateAsync(username, password);
             var inbox = client.Inbox;
             await inbox.OpenAsync(FolderAccess.ReadOnly);
@@ -66,13 +66,13 @@ public class EmailService
         }
     }
     
-    public async Task<List<EmailEnvelope>> FetchAllEmailSummariesAsync(string username, string password, string folder)
+    public async Task<List<EmailEnvelope>> FetchAllEmailSummariesAsync(string username, string password, string folder, string imapServer, int imapPort)
     {
         List<EmailEnvelope> emailEnvelopes = new();
         
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect); 
+            await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect); 
             await client.AuthenticateAsync(username, password);
             var inbox = await client.GetFolderAsync(folder);
             await inbox.OpenAsync(FolderAccess.ReadOnly);
@@ -93,11 +93,11 @@ public class EmailService
         }
     }
     
-    public async Task<MimeKit.MimeMessage> FetchEmailAsync(string username, string password, int id)
+    public async Task<MimeKit.MimeMessage> FetchEmailAsync(string username, string password, int id, string imapServer, int imapPort)
     {
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
+            await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect);
             await client.AuthenticateAsync(username, password);
             var inbox = client.Inbox;
             await inbox.OpenAsync(FolderAccess.ReadWrite);
@@ -108,13 +108,13 @@ public class EmailService
         }
     }
 
-    public async Task<List<EmailEnvelope>> SearchEmailsAsync(string username, string password, string searchQuery)
+    public async Task<List<EmailEnvelope>> SearchEmailsAsync(string username, string password, string searchQuery, string imapServer, int imapPort)
     {
         var emailEnvelopes = new List<EmailEnvelope>();
 
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
+            await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect);
             await client.AuthenticateAsync(username, password);
             var inbox = client.Inbox;
             await inbox.OpenAsync(FolderAccess.ReadOnly);
@@ -145,11 +145,11 @@ public class EmailService
         }
     }
 
-    public async Task<bool> DeleteEmailAsync(string username, string password, int id)
+    public async Task<bool> DeleteEmailAsync(string username, string password, int id, string imapServer, int imapPort)
     {
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync("imap.wp.pl", 993, SecureSocketOptions.SslOnConnect);
+            await client.ConnectAsync(imapServer, imapPort, SecureSocketOptions.SslOnConnect);
             await client.AuthenticateAsync(username, password);
             var inbox = client.Inbox;
             await inbox.OpenAsync(FolderAccess.ReadWrite);

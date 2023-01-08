@@ -13,17 +13,15 @@ public partial class EmailDetailsPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
-        // webView.Navigated += (sender, args) =>
-        // {
-            // webView.EvaluateJavaScriptAsync("document.body.style.fontSize='100px'");
-        // };
+        webView.Navigated += (sender, args) =>
+        {
+            webView.Eval("document.body.style.fontSize='100px'");
+        };
     }
     
-    protected override  void OnAppearing()
-    {
-        base.OnAppearing();
-        webView.EvaluateJavaScriptAsync("document.body.style.fontSize='100px'");
-        // await webView.EvaluateJavaScriptAsync("document.body.style.fontSize='100px'");
 
+    private void WebView_OnNavigating(object sender, WebNavigatingEventArgs e)
+    {
     }
+    
 }

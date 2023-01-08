@@ -15,20 +15,26 @@ public partial class MainPageViewModel : BaseViewModel
     {
         this.emailService = emailService;
         _credentialService = credentialService;
-        _credentialService.SetCredentials(string.Empty, string.Empty);
+        _credentialService.SetCredentials(
+            string.Empty, string.Empty, string.Empty,
+            0, string.Empty, 0);
     }
 
     [ICommand]
     async Task LoginUserAsync()
     {
         //TODO: DO WYWALENIA
-        // Username = "inzynierka2022grygierczyk@wp.pl";
-        // Password = "zxczxczxc1";
+        Username = "inzynierka2022grygierczyk@wp.pl";
+        Password = "zxczxczxc1";
+        SmtpServer = "smtp.wp.pl";
+        SmtpPort = 465;
+        ImapServer = "imap.wp.pl";
+        ImapPort = 993;
+        _credentialService.SetCredentials(Username, Password, SmtpServer, SmtpPort, ImapServer, ImapPort);
 
-        var veryfied = await emailService.VerifyCredentialsAsync(Username, Password);
+        var veryfied = await emailService.VerifyCredentialsAsync(Username, Password, ImapServer, ImapPort);
         if (veryfied)
         {
-            _credentialService.SetCredentials(Username, Password);
             await Shell.Current.GoToAsync(nameof(MailboxPage));
             Username = string.Empty;
             Password = string.Empty;
@@ -37,6 +43,6 @@ public partial class MainPageViewModel : BaseViewModel
 
     public async Task ClearCredentialsAsync()
     {
-        _credentialService.SetCredentials("", "");
+        _credentialService.SetCredentials("", "", "", 0, "", 0);
     }
 }

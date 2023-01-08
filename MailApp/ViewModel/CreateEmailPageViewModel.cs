@@ -25,13 +25,13 @@ public partial class CreateEmailPageViewModel : BaseViewModel
     {
         _credentialService = credentialService;
         this.createEmailService = createEmailService;
-        (Username, Password) = _credentialService.GetCredentials();
+        (Username, Password, SmtpServer, SmtpPort, ImapServer, ImapPort) = _credentialService.GetCredentials();
     }
     
     [ICommand]
     public async Task SendEmail()
     {
-        await createEmailService.SendEmailAsync(to, subject, body, Username, Password, attachments);
+        await createEmailService.SendEmailAsync(to, subject, body, Username, Password, attachments, ImapServer, ImapPort, SmtpServer, SmtpPort);
         await Shell.Current.GoToAsync($"..");
     }
     

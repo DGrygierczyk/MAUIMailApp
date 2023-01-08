@@ -7,7 +7,7 @@ namespace MailApp.Services;
 
 public class CreateEmailService
 {
-    public async Task SendEmailAsync(string to, string subject, string body, string username, string password, List<MimeEntity> attachments)
+    public async Task SendEmailAsync(string to, string subject, string body, string username, string password, List<MimeEntity> attachments, string imapServer, int imapPort, string smtpServer, int smtpPort)
     {
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(username, username));
@@ -25,7 +25,7 @@ public class CreateEmailService
         message.Body = multipart;
         using (var client = new SmtpClient())
         {
-            await client.ConnectAsync("smtp.wp.pl", 465, true);
+            await client.ConnectAsync(smtpServer,smtpPort, true);
             await client.AuthenticateAsync(username, password);
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
@@ -33,7 +33,7 @@ public class CreateEmailService
         //add emial to send folder
         using (var client = new ImapClient())
         {
-            await client.ConnectAsync("imap.wp.pl", 993, true);
+            await client.ConnectAsync(imapServer,imapPort, true);
             await client.AuthenticateAsync(username, password);
             var inbox = await client.GetFolderAsync("Sent");
             await inbox.OpenAsync(FolderAccess.ReadWrite);

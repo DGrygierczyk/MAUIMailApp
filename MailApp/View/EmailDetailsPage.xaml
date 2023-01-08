@@ -8,9 +8,9 @@
     
     <Grid ColumnDefinitions="*,*"
           RowDefinitions="*, Auto, *">
-        <WebView Grid.RowSpan="2" Grid.ColumnSpan="2">
+        <WebView x:Name="webView" Grid.RowSpan="2" Grid.ColumnSpan="2" Navigating="WebView_OnNavigating" BackgroundColor="Black" >
             <WebView.Source>
-                <HtmlWebViewSource Html="{Binding EmailDetails.Body.HtmlBody}" />
+                <HtmlWebViewSource Html="{Binding EmailDetails.HtmlBody}" />
             </WebView.Source>
         </WebView>
         <CollectionView

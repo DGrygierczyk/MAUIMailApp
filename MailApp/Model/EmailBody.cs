@@ -7,4 +7,5 @@ public class EmailBody
 {
     public MimeKit.MimeMessage Body { get; set; }
     public List<MimeEntity> Attachments { get; set; }
+    public string HtmlBody { get; set; }
 }
