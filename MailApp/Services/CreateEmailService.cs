@@ -9,7 +9,8 @@ namespace MailApp.Services;
 
 public class CreateEmailService
 {
-    public async Task SendEmailAsync(string to, string subject, string body, ObservableCollection<MimeEntity> attachments, ServerCredentials credentials)
+    public async Task SendEmailAsync(string to, string subject, string body,
+        ObservableCollection<MimeEntity> attachments, ServerCredentials credentials)
     {
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(credentials.Username, credentials.Username));
@@ -18,12 +19,8 @@ public class CreateEmailService
         var multipart = new Multipart("mixed");
         multipart.Add(new TextPart("plain") { Text = body });
         if (attachments != null)
-        {
             foreach (var attachment in attachments)
-            {
                 multipart.Add(attachment);
-            }
-        }
         message.Body = multipart;
         using (var client = new SmtpClient())
         {
@@ -49,7 +46,6 @@ public class CreateEmailService
         var results = await FilePicker.PickMultipleAsync();
         var attachments = new ObservableCollection<MimeEntity>();
         if (results != null)
-        {
             foreach (var file in results)
             {
                 var stream = await file.OpenReadAsync();
@@ -62,7 +58,6 @@ public class CreateEmailService
                 };
                 attachments.Add(attachment);
             }
-        }
 
         return attachments;
     }
