@@ -3,6 +3,7 @@ using MailApp.Model;
 using MimeKit;
 using System.Collections.Generic;
 using CommunityToolkit.Mvvm.Input;
+using MailApp.View;
 
 namespace MailApp.ViewModel;
 
@@ -63,5 +64,13 @@ public partial class EmailDetailsPageViewModel : BaseViewModel
             }
 
             await fileStream.DisposeAsync();
+    }
+    [ICommand]
+    public async Task ReplayAsync(EmailBody emailDetails)
+    {
+        await Shell.Current.GoToAsync($"{nameof(CreateEmailPage)}", true, new Dictionary<string, object>
+        {
+            { "EmailDetails", emailDetails }
+        });
     }
 }

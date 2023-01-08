@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MailApp.Model;
 using MailApp.Services;
 using MailApp.Services.Interfaces;
 using MailApp.View;
@@ -8,6 +9,7 @@ using MimeKit;
 
 namespace MailApp.ViewModel;
 
+[QueryProperty(nameof(EmailDetails), "EmailDetails")]
 public partial class CreateEmailPageViewModel : BaseViewModel
 {
     [ObservableProperty]  string to;
@@ -15,6 +17,7 @@ public partial class CreateEmailPageViewModel : BaseViewModel
     [ObservableProperty]  string body;
     [ObservableProperty]  List<MimeEntity> attachments;
     [ObservableProperty]  ContentDisposition contentDisposition;
+    [ObservableProperty]  EmailBody emailDetails;
 
     
     private CreateEmailService createEmailService;
@@ -39,5 +42,12 @@ public partial class CreateEmailPageViewModel : BaseViewModel
     public async Task AddAttachments()
     {
         Attachments = await createEmailService.AddAttachmentsAsync();
+    }
+    
+    public void FillReplayEmail(EmailBody emailBody)
+    {
+        To = emailBody.Body.From.First().Name;
+        Subject = "Reply: "+emailBody.Body.Subject;
+        Body = emailBody.Body.TextBody;
     }
 }

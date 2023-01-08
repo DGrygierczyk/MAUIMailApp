@@ -8,6 +8,15 @@ public partial class CreateEmailPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
+
+    }
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing(); 
+        if (((CreateEmailPageViewModel)BindingContext).EmailDetails != null)
+        {
+            ((CreateEmailPageViewModel)BindingContext).FillReplayEmail(((CreateEmailPageViewModel)BindingContext).EmailDetails);
+        }
     }
 
     

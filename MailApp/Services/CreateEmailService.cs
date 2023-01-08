@@ -31,7 +31,7 @@ public class CreateEmailService
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
         }
-        //add emial to send folder
+
         using (var client = new ImapClient())
         {
             await client.ConnectAsync(credentials.ImapServer, credentials.ImapPort, true);

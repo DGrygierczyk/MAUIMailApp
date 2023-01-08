@@ -5,9 +5,30 @@
              x:Class="MailApp.View.EmailDetailsPage"
              xmlns:viewmodel="clr-namespace:MailApp.ViewModel"
              x:DataType="viewmodel:EmailDetailsPageViewModel">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Reply"  Command="{Binding ReplayCommand}" CommandParameter="{Binding EmailDetails}"/>
+    </ContentPage.ToolbarItems>
     
-    <Grid ColumnDefinitions="*,*"
-          RowDefinitions="*, Auto, *">
+    <Grid RowDefinitions="auto, auto, *">
+        <Label Grid.Row="0">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="From: " FontAttributes="Bold" />
+                    <Span Text="{Binding EmailDetails.Body.From}" />
+                </FormattedString>
+                </Label.FormattedText>
+        </Label>
+        <Label Grid.Row="1">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Subject: " FontAttributes="Bold" />
+                    <Span Text="{Binding EmailDetails.Body.Subject}" />
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
+        
+        <Grid Grid.Row="2" ColumnDefinitions="*,*"
+              RowDefinitions="*, Auto, *">
         <WebView x:Name="webView" Grid.RowSpan="2" Grid.ColumnSpan="2" Navigating="WebView_OnNavigating" BackgroundColor="Black" >
             <WebView.Source>
                 <HtmlWebViewSource Html="{Binding EmailDetails.HtmlBody}" />
@@ -34,5 +55,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+    </Grid>
     </Grid>
 </ContentPage>
