@@ -30,6 +30,7 @@
                 Text="Search"
                 Command="{Binding SearchEmailsCommand}" />
             <CollectionView
+                x:Name="EmailsView"
                 Grid.Row="1"
                 Grid.ColumnSpan="2"
                 ItemsSource="{Binding EmailEnvelopes}"
@@ -37,7 +38,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:EmailEnvelope">
                         <Grid Padding="10">
-                            <Frame HeightRequest="125" Style="{StaticResource CardView}">
+                            <Frame HeightRequest="125" Style="{StaticResource CardView}" BackgroundColor="#1C1C1E">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=GoToEmailCommand}"
@@ -62,6 +63,9 @@
                                         <Label Style="{StaticResource MediumLabel}" Text="{Binding Subject}" />
                                     </VerticalStackLayout>
                                     <Button Grid.Column="2"
+                                            BackgroundColor="Red"
+                                            Text="Delete"
+                                            TextColor="White"
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=DeleteEmailCommand}"
                                             CommandParameter="{Binding .}" />
                                 </Grid>
@@ -86,11 +90,6 @@
                     <CollectionView IsVisible="false" x:Name="MenuGrid" ItemsSource="{Binding Name}">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <!-- <Frame> -->
-                                <!--     <Frame.GestureRecognizers> -->
-                                <!--         <TapGestureRecognizer Tapped="MenuItem_OnClicked"/> -->
-                                <!--     </Frame.GestureRecognizers> -->
-                                <!-- </Frame> -->
                                 <Button Text="{Binding .}" 
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MailboxPageViewModel}}, Path=FetchEmailsCommand}"
                                         CommandParameter="{Binding .}"/>

@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MailApp.Model;
@@ -15,8 +16,9 @@ public partial class CreateEmailPageViewModel : BaseViewModel
     [ObservableProperty]  string to;
     [ObservableProperty]  string subject;
     [ObservableProperty]  string body;
-    [ObservableProperty]  List<MimeEntity> attachments;
-    [ObservableProperty]  ContentDisposition contentDisposition;
+    [ObservableProperty]  ObservableCollection<MimeEntity> attachmentsToSend; 
+    // [ObservableProperty]  ContentDisposition contentDisposition;
+    [ObservableProperty]  string fileName;
     [ObservableProperty]  EmailBody emailDetails;
 
     
@@ -34,14 +36,21 @@ public partial class CreateEmailPageViewModel : BaseViewModel
     public async Task SendEmail()
     {
         var credential =  _credentialService.GetCredentials();
-        await createEmailService.SendEmailAsync(to, subject, body, attachments, credential);
+        await createEmailService.SendEmailAsync(to, subject, body, attachmentsToSend, credential);
         await Shell.Current.GoToAsync($"..");
     }
     
     [ICommand]
     public async Task AddAttachments()
     {
-        Attachments = await createEmailService.AddAttachmentsAsync();
+        AttachmentsToSend = await createEmailService.AddAttachmentsAsync();
+    }
+    
+    [ICommand]
+    public void DeleteAttachment(MimeEntity attachment)
+    {
+        AttachmentsToSend.Remove(attachment);
+        
     }
     
     public void FillReplayEmail(EmailBody emailBody)

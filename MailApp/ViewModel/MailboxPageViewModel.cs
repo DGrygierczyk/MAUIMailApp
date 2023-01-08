@@ -62,14 +62,16 @@ public partial class MailboxPageViewModel : BaseViewModel
         {
             attachments.Add(attachment);
         }
+
         var emailDetails = new EmailBody
         {
             Body = fetchedEmail,
-            Attachments = attachments,
-            HtmlBody = fetchedEmail.HtmlBody+
-            "<script>document.body.style.fontSize='3em'</script>" +
-            "<style>body{color: white; background-color: black;}</style>"
+            Attachments = attachments
         };
+        emailDetails.HtmlBody = fetchedEmail.HtmlBody ?? "<pre>" + fetchedEmail.TextBody + "</pre>";
+        emailDetails.HtmlBody += "<script>document.body.style.fontSize='3em'</script>" +
+                                 "<style>body{color: white; background-color: black;}</style>";
+
 
         await Shell.Current.GoToAsync($"{nameof(EmailDetailsPage)}", true, new Dictionary<string, object>
         {

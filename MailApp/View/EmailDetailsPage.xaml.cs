@@ -13,15 +13,14 @@ public partial class EmailDetailsPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
-        webView.Navigated += (sender, args) =>
-        {
-            webView.Eval("document.body.style.fontSize='100px'");
-        };
     }
     
-
-    private void WebView_OnNavigating(object sender, WebNavigatingEventArgs e)
+    
+    protected override void OnAppearing()
     {
+        base.OnAppearing();
+        var x = ((EmailDetailsPageViewModel)BindingContext).EmailDetails;
+
     }
     
 }

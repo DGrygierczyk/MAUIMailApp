@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using MailApp.Model;
 using MailKit;
 using MailKit.Net.Imap;
@@ -8,7 +9,7 @@ namespace MailApp.Services;
 
 public class CreateEmailService
 {
-    public async Task SendEmailAsync(string to, string subject, string body, List<MimeEntity> attachments, ServerCredentials credentials)
+    public async Task SendEmailAsync(string to, string subject, string body, ObservableCollection<MimeEntity> attachments, ServerCredentials credentials)
     {
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(credentials.Username, credentials.Username));
@@ -43,10 +44,10 @@ public class CreateEmailService
         }
     }
 
-    public async Task<List<MimeEntity>> AddAttachmentsAsync()
+    public async Task<ObservableCollection<MimeEntity>> AddAttachmentsAsync()
     {
         var results = await FilePicker.PickMultipleAsync();
-        var attachments = new List<MimeEntity>();
+        var attachments = new ObservableCollection<MimeEntity>();
         if (results != null)
         {
             foreach (var file in results)

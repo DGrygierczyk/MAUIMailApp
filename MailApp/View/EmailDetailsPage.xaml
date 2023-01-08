@@ -10,7 +10,7 @@
     </ContentPage.ToolbarItems>
     
     <Grid RowDefinitions="auto, auto, *">
-        <Label Grid.Row="0">
+        <Label Grid.Row="0" Padding="0,10,0,0">
             <Label.FormattedText>
                 <FormattedString>
                     <Span Text="From: " FontAttributes="Bold" />
@@ -18,7 +18,7 @@
                 </FormattedString>
                 </Label.FormattedText>
         </Label>
-        <Label Grid.Row="1">
+        <Label Grid.Row="1" Padding="0,10,0,0">
             <Label.FormattedText>
                 <FormattedString>
                     <Span Text="Subject: " FontAttributes="Bold" />
@@ -28,29 +28,29 @@
         </Label>
         
         <Grid Grid.Row="2" ColumnDefinitions="*,*"
-              RowDefinitions="*, Auto, *">
-        <WebView x:Name="webView" Grid.RowSpan="2" Grid.ColumnSpan="2" Navigating="WebView_OnNavigating" BackgroundColor="Black" >
+              RowDefinitions="*, Auto, *"
+              Padding="5,20,5,20">
+        <WebView x:Name="webView" Grid.RowSpan="2" Grid.ColumnSpan="2"  BackgroundColor="Black" >
             <WebView.Source>
                 <HtmlWebViewSource Html="{Binding EmailDetails.HtmlBody}" />
             </WebView.Source>
         </WebView>
+            
         <CollectionView
-            Grid.Row="2"
+            Grid.Row="2" Grid.ColumnSpan="2"
             ItemsSource="{Binding AttachmentNames}"
             SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame HeightRequest="100">
+                    <Frame HeightRequest="40" Padding="20,5,20,5"  BorderColor="#DDDDDD">
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:EmailDetailsPageViewModel}}, Path=SaveFileCommand}"
                                 CommandParameter="{Binding .}" />
                         </Frame.GestureRecognizers>
-                        <Grid>
                             <VerticalStackLayout>
-                                <Label Text="{Binding .}" />
+                                <Label Padding="2,5,2,5" Text="{Binding .}" MaxLines="1" />
                             </VerticalStackLayout>
-                        </Grid>
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

@@ -14,6 +14,8 @@ public partial class MailboxPage : ContentPage
     {
         base.OnAppearing();
         await ((MailboxPageViewModel)BindingContext).FetchEmailsAsync();
+        CollectionView myCollectionView = EmailsView;
+        myCollectionView.ScrollTo(0);
     }
    async void MenuItem_OnClicked(object sender, EventArgs e)
     {
