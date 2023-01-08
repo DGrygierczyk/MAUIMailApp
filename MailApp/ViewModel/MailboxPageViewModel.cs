@@ -14,8 +14,6 @@ namespace MailApp.ViewModel;
 
 public partial class MailboxPageViewModel : BaseViewModel
 {
-    // [ObservableProperty] string username;
-    // [ObservableProperty] string password;
     public ObservableCollection<EmailEnvelope> EmailEnvelopes { get; } = new();
 
     [ObservableProperty] IList<IMailFolder> emailFolders;
@@ -38,17 +36,11 @@ public partial class MailboxPageViewModel : BaseViewModel
         var credentials = _credentialService.GetCredentials();
         var envelopes = await emailService.FetchAllEmailSummariesAsync(credentials, selectedFolder);
 
-        foreach (var envelope in envelopes)
-        {
-            EmailEnvelopes.Insert(0, envelope);
-        }
-        
+        foreach (var envelope in envelopes) EmailEnvelopes.Insert(0, envelope);
+
         Name.Clear();
         var folders = await emailService.GetFoldersAsync(credentials);
-        foreach (var folder in folders)
-        {
-            Name.Add(folder.Name);
-        } 
+        foreach (var folder in folders) Name.Add(folder.Name);
     }
 
     [ICommand]
@@ -58,10 +50,7 @@ public partial class MailboxPageViewModel : BaseViewModel
         List<MimeEntity> attachments = new();
         var fetchedEmail = await emailService.FetchEmailAsync(credentials, envelope.Id);
 
-        foreach (var attachment in fetchedEmail.Attachments)
-        {
-            attachments.Add(attachment);
-        }
+        foreach (var attachment in fetchedEmail.Attachments) attachments.Add(attachment);
 
         var emailDetails = new EmailBody
         {
@@ -97,10 +86,7 @@ public partial class MailboxPageViewModel : BaseViewModel
         }
 
         var envelopes = await emailService.SearchEmailsAsync(credentials, searchEmailQuery);
-        foreach (var envelope in envelopes)
-        {
-            EmailEnvelopes.Insert(0, envelope);
-        }
+        foreach (var envelope in envelopes) EmailEnvelopes.Insert(0, envelope);
     }
 
     [ICommand]

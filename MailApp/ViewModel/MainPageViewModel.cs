@@ -20,7 +20,7 @@ public partial class MainPageViewModel : BaseViewModel
     }
 
     [ICommand]
-    async Task LoginUserAsync()
+    private async Task LoginUserAsync()
     {
         //TODO: DO WYWALENIA
         Username = "inzynierka2022grygierczyk@wp.pl";
@@ -29,7 +29,7 @@ public partial class MainPageViewModel : BaseViewModel
         SmtpPort = 465;
         ImapServer = "imap.wp.pl";
         ImapPort = 993;
-        ServerCredentials credentials = new ServerCredentials(Username, Password, ImapServer, ImapPort, SmtpServer, SmtpPort);
+        var credentials = new ServerCredentials(Username, Password, ImapServer, ImapPort, SmtpServer, SmtpPort);
         _credentialService.SetCredentials(credentials);
 
         var veryfied = await emailService.VerifyCredentialsAsync(credentials);

@@ -17,7 +17,6 @@ public partial class CreateEmailPageViewModel : BaseViewModel
     [ObservableProperty]  string subject;
     [ObservableProperty]  string body;
     [ObservableProperty]  ObservableCollection<MimeEntity> attachmentsToSend; 
-    // [ObservableProperty]  ContentDisposition contentDisposition;
     [ObservableProperty]  string fileName;
     [ObservableProperty]  EmailBody emailDetails;
 
@@ -31,32 +30,31 @@ public partial class CreateEmailPageViewModel : BaseViewModel
         _credentialService = credentialService;
         this.createEmailService = createEmailService;
     }
-    
+
     [ICommand]
     public async Task SendEmail()
     {
-        var credential =  _credentialService.GetCredentials();
+        var credential = _credentialService.GetCredentials();
         await createEmailService.SendEmailAsync(to, subject, body, attachmentsToSend, credential);
-        await Shell.Current.GoToAsync($"..");
+        await Shell.Current.GoToAsync("..");
     }
-    
+
     [ICommand]
     public async Task AddAttachments()
     {
         AttachmentsToSend = await createEmailService.AddAttachmentsAsync();
     }
-    
+
     [ICommand]
     public void DeleteAttachment(MimeEntity attachment)
     {
         AttachmentsToSend.Remove(attachment);
-        
     }
-    
+
     public void FillReplayEmail(EmailBody emailBody)
     {
         To = emailBody.Body.From.First().Name;
-        Subject = "Reply: "+emailBody.Body.Subject;
+        Subject = "Reply: " + emailBody.Body.Subject;
         Body = emailBody.Body.TextBody;
     }
 }

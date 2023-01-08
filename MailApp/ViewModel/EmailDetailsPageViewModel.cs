@@ -33,17 +33,10 @@ public partial class EmailDetailsPageViewModel : BaseViewModel
         }
     }
 
-    public EmailDetailsPageViewModel()
-    {
-    }
-
     private List<string> GetAttachmentNames(EmailBody email)
     {
-        List<string> attachmentNames = new List<string>();
-        foreach (var attachment in email.Attachments)
-        {
-            attachmentNames.Add(attachment.ContentDisposition.FileName);
-        }
+        var attachmentNames = new List<string>();
+        foreach (var attachment in email.Attachments) attachmentNames.Add(attachment.ContentDisposition.FileName);
         return attachmentNames;
     }
 
@@ -51,20 +44,17 @@ public partial class EmailDetailsPageViewModel : BaseViewModel
     public async Task SaveFileAsync(string filename)
     {
         var path = FileSystem.Current.AppDataDirectory;
-            var fullPath = Path.Combine(path, filename);
-            var fileStream = File.Create(fullPath);
+        var fullPath = Path.Combine(path, filename);
+        var fileStream = File.Create(fullPath);
 
-            foreach (var attachment in EmailDetails.Attachments.Where(
-                         att => att.ContentDisposition.FileName == filename))
-            {
-                if (attachment is MimePart)
-                {
-                    await ((MimePart)attachment).Content.DecodeToAsync(fileStream);
-                }
-            }
+        foreach (var attachment in EmailDetails.Attachments.Where(
+                     att => att.ContentDisposition.FileName == filename))
+            if (attachment is MimePart)
+                await ((MimePart)attachment).Content.DecodeToAsync(fileStream);
 
-            await fileStream.DisposeAsync();
+        await fileStream.DisposeAsync();
     }
+
     [ICommand]
     public async Task ReplayAsync(EmailBody emailDetails)
     {
