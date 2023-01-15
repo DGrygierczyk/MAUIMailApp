@@ -22,13 +22,6 @@ public partial class MainPageViewModel : BaseViewModel
     [ICommand]
     private async Task LoginUserAsync()
     {
-        //TODO: DO WYWALENIA
-        Username = "inzynierka2022grygierczyk@wp.pl";
-        Password = "zxczxczxc1";
-        SmtpServer = "smtp.wp.pl";
-        SmtpPort = 465;
-        ImapServer = "imap.wp.pl";
-        ImapPort = 993;
         var credentials = new ServerCredentials(Username, Password, ImapServer, ImapPort, SmtpServer, SmtpPort);
         _credentialService.SetCredentials(credentials);
 
